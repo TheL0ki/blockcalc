@@ -1,0 +1,17 @@
+{
+  "name": "blockcalc",
+  "version": "1.0.0",
+  "description": "Calculator for Minecraft cube structures",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron main.js",
+	"pack": "build --dir"
+  },
+  "build": {
+	"appId": "at.loki-net.blockcalc",
+	"productName": "Block Calc"
+	
+  },
+  "author": "Alexander Dominikus",
+  "license": "MIT"
+}

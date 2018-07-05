@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>MC Block Calc</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <style>
+            .result {
+                display: block;
+                border: 1px solid red;
+                clear: both;
+            }
+            .result .right {
+                float: right;
+            }
+            
+            .result .left {
+                float: left;
+            }
+        </style>
+    </head>
+    <body style="background: darkgrey">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col">
+              <form>
+                <div class="form-group">
+                  <label for="length">Length</label>
+                  <input type="number" id="length" class="form-control" autofocus>
+                  <label for="width">Width</label>
+                  <input type="number" id="width" class="form-control">
+                  <label for="height">Height</label>
+                  <input type="number" id="height" class="form-control">
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <button type="submit" class="btn btn-success btn-block" name="submit" id="submit">Calculate</button>
+                  </div>
+                  <div class="col">
+                    <button type="reset" class="btn btn-secondary btn-block" name="clear" id="clear">Clear</button>
+                  </div>
+                </div>
+              </form>
+          </div>
+        </div>
+        <div id="output"></div>
+      </div>
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    </body>
+    <script>
+      const electron = require('electron');
+      const {ipcRenderer} = electron;
+
+      const form = document.querySelector('form');
+      form.addEventListener('submit', submitForm);
+      form.addEventListener('reset', resetForm);
+
+      function submitForm(e) {
+        e.preventDefault();
+        const length = document.getElementById('length').value;
+        const width = document.getElementById('width').value;
+        const height = document.getElementById('height').value;
+
+        const range = (length * 2) + ((width * 2) - 4);
+        const area = length * width;
+        const fvol = (length * width) * height;
+        const hvol = ((length * width) * 2) + (range * (height - 2));
+        const frame = (range * 2) + ((height - 2) * 4);
+
+        if(height > 1) {
+          var output = `
+            <div class="row">
+              <div class="col">
+                <hr>
+              </div>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item">Range:<span class=right" style="float: right;">` + range.toLocaleString() + `</span></li>
+                <li class="list-group-item">Area:<span class=right" style="float: right;">` + area.toLocaleString() + `</span></li>
+                <li class="list-group-item">Frame:<span class=right" style="float: right;">` + frame.toLocaleString() + `</span></li>
+                <li class="list-group-item">Volume (Full):<span class=right" style="float: right;">` + fvol.toLocaleString() + `</span></li>
+                <li class="list-group-item">Volume (Hollow):<span class=right" style="float: right;">` + hvol.toLocaleString() + `</span></li>
+            </ul>
+          `;
+          window.resizeTo(290, 630);
+        } else {
+          var output = `
+          <div class="row">
+            <div class="col">
+              <hr>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <ul class="list-group">
+                <li class="list-group-item">Range:<span class=right" style="float: right;">` + range.toLocaleString() + `</span></li>
+                <li class="list-group-item">Area:<span class=right" style="float: right;">` + area.toLocaleString() + `</span></li>
+              </ul>
+            </div>
+          </div>
+          `;
+          window.resizeTo(290, 468);
+        }
+
+        document.getElementById('output').innerHTML = output;
+      }
+
+      function resetForm(e) {
+        window.resizeTo(290, 360);
+        document.getElementById('output').innerHTML = '';
+        document.getElementById('length').focus();
+      }
+    </script>
+</html>
