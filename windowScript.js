@@ -1,3 +1,9 @@
+document.addEventListener("keyup", function(e) {
+    if(e.key === 'Delete') {
+        resetForm();
+    }
+}, false);
+
 const form = document.querySelector('form');
 form.addEventListener('submit', submitForm);
 form.addEventListener('reset', resetForm);
@@ -77,5 +83,8 @@ function resetForm(e) {
     $(fvolOutput).hide();
     $(hvolOutput).hide();
 
+    document.getElementById('length').value = '';
+    document.getElementById('width').value = '';
+    document.getElementById('height').value = '';
     document.getElementById('length').focus();
 }
