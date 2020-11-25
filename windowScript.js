@@ -1,7 +1,3 @@
-const electron = require('electron');
-const {ipcRenderer} = electron;
-window.$ = window.jQuery = require('jquery');
-
 const form = document.querySelector('form');
 form.addEventListener('submit', submitForm);
 form.addEventListener('reset', resetForm);
@@ -10,7 +6,7 @@ var outputDiv = document.getElementById('output');
 
 var rangeOutput = document.getElementById('rangeOutput');
 var areaOutput = document.getElementById('areaOutput');
-var frameOutput = document.getElementById('fraemOutput');
+var frameOutput = document.getElementById('frameOutput');
 var fvolOutput = document.getElementById('fvolOutput');
 var hvolOutput = document.getElementById('hvolOutput');
 
@@ -69,8 +65,6 @@ function submitForm(e) {
 
         window.resizeTo(290, 468);
     }
-
-    document.getElementById('output').innerHTML = output;
 }
 
 function resetForm(e) {

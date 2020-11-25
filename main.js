@@ -4,16 +4,17 @@ const path = require('path');
 
 const {app, BrowserWindow, Menu, ipcRenderer} = electron;
 
-let mainWindow;
-
 
 // Listen for app to be ready
 app.on('ready', function() {
-    // Create new Window
-    mainWindow = new BrowserWindow({
-      width: 290,
-      height: 360
-    });
+  // Create BrowserWindow
+  const mainWindow = new BrowserWindow({
+    width: 290,
+    height: 360,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js')
+    }
+  });;
     // Load HTML into Window
     mainWindow.loadURL(url.format({
         pathname: path.join(__dirname, 'mainWindow.html'),
@@ -61,6 +62,14 @@ if(process.env.NODE_ENV !== 'production') {
       },
       {
         role: 'reload'
+      },
+      {
+        label: 'Restart App',
+        accelerator: process.platform == 'darwin' ? 'Command+E' : 'Ctrl+E',
+        click () {
+          app.relaunch();
+          app.quit();
+        }
       }
     ]
   })
