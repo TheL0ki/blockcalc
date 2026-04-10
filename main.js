@@ -1,32 +1,42 @@
-const electron  = require('electron');
-const url = require('url');
 const path = require('path');
 
-const {app, BrowserWindow, Menu, ipcRenderer} = electron;
+const { app, BrowserWindow, Menu } = require('electron');
 
+let mainWindow;
 
-// Listen for app to be ready
-app.on('ready', function() {
-  // Create BrowserWindow
-  const mainWindow = new BrowserWindow({
+function createMainWindow() {
+  mainWindow = new BrowserWindow({
     width: 290,
     height: 360,
+    resizable: true,
     webPreferences: {
+      contextIsolation: true,
+      sandbox: true,
+      nodeIntegration: false,
       preload: path.join(__dirname, 'preload.js')
     }
-  });;
-    // Load HTML into Window
-    mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'mainWindow.html'),
-        protocol: 'file:',
-        slahes: true
-    }));
+  });
+  mainWindow.removeMenu();
+  mainWindow.loadFile(path.join(__dirname, 'mainWindow.html'));
+}
 
-    // Build menue from template
-    const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+app.whenReady().then(() => {
+  createMainWindow();
 
-    // Insert Menu
-    Menu.setApplicationMenu(mainMenu);
+  const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+  Menu.setApplicationMenu(mainMenu);
+});
+
+app.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createMainWindow();
+  }
+});
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
 });
 
 // Create menu template
@@ -40,7 +50,7 @@ const mainMenuTemplate = [
       },
       {
         label: 'Quit',
-        accelerator: process.platform == 'darwin' ? 'Command+Q' : 'Ctrl+Q',
+        accelerator: process.platform === 'darwin' ? 'Command+Q' : 'Ctrl+Q',
         click(){
           app.quit();
         }
@@ -55,9 +65,11 @@ if(process.env.NODE_ENV !== 'production') {
     submenu:[
       {
         label: 'Toggle console',
-        accelerator: process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
+        accelerator: process.platform === 'darwin' ? 'Command+I' : 'Ctrl+I',
         click(item, focusedWindow) {
-          focusedWindow.toggleDevTools();
+          if (focusedWindow) {
+            focusedWindow.webContents.toggleDevTools();
+          }
         }
       },
       {
@@ -65,7 +77,7 @@ if(process.env.NODE_ENV !== 'production') {
       },
       {
         label: 'Restart App',
-        accelerator: process.platform == 'darwin' ? 'Command+E' : 'Ctrl+E',
+        accelerator: process.platform === 'darwin' ? 'Command+E' : 'Ctrl+E',
         click () {
           app.relaunch();
           app.quit();

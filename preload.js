@@ -1,1 +1,1 @@
-let $ = require('jquery');
+// Intentionally minimal preload for hardened modern Electron defaults.
